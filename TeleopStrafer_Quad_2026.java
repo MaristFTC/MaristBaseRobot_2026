@@ -7,7 +7,7 @@ Modified by michaudc 2017
 Additional modifications by michaudc 2021
 Modifications for CENTERSTAGE by michaudc 2023
 Modifications for DECODE by michaudc 2025
-Modifications for BIOBUZZ by michaudc 2026 on 12 Aug 26 - Left Blank for Now pending game release
+Modifications for BIOBUZZ by michaudc 2026 on 15 Sep 26: Added Code for Launcher
 */
 package org.firstinspires.ftc.teamcode;
 
@@ -51,6 +51,15 @@ public class TeleopStrafer_Quad_2026 extends OpMode {
     MaristBaseRobot2026_Quad robot   = new MaristBaseRobot2026_Quad(); // use the class created to define a Robot's hardware
 
     private double SPEED_CONTROL = 0.5;
+
+    // For PID Control
+    private double SHOOTER_FULL = -1600;
+    private double SHOOTER_HALF = -1500;
+    private double SHOOTER_VELOCITY = 0;
+    
+    private double NEW_P = 160;
+    private double NEW_I = 1.5;
+    private double NEW_D = 0;
     
     /*
      * Code to run ONCE when the driver hits INIT
@@ -72,6 +81,10 @@ public class TeleopStrafer_Quad_2026 extends OpMode {
         robot.rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         
+        // Set PID for Launcher
+        PIDCoefficients pidSettings = new PIDCoefficients(NEW_P, NEW_I, NEW_D);
+        robot.leftArm.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidSettings);
+
         // Wait for driver to press start
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
@@ -108,15 +121,18 @@ public class TeleopStrafer_Quad_2026 extends OpMode {
         robot.driveStrafer(leftX, leftY, rightX);
         
         // dpad controls
+        // Launcher
         if (gamepad1.dpad_up) {
-            
+            SHOOTER_VELOCITY = SHOOTER_FULL;
         }
         if (gamepad1.dpad_left) {
-            
+            SHOOTER_VELOCITY = SHOOTER_HALF;
         }
         if (gamepad1.dpad_down) {
-            
+            SHOOTER_VELOCITY = 0;
         }
+
+        robot.leftArm.setVelocity(SHOOTER_VELOCITY);
                 
         // gamepad1 left trigger controls
         if (gamepad1.left_trigger > 0.5) {
@@ -130,14 +146,15 @@ public class TeleopStrafer_Quad_2026 extends OpMode {
         }
         
         // gamepad1 buttons a, b, x, y
+        // Intake with DC Motor
         if (gamepad1.a) {
-            
+            robot.rightArm.setPower(0);
         }
         if (gamepad1.b) {
-            
+            robot.rightArm.setPower(0.7);
         }
         if (gamepad1.x) {
-            
+            robot.rightArm.setPower(-0.7);
         }
         if (gamepad1.y) {
 
