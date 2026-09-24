@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * 
  */
 
-@TeleOp(name="MaristKitBot2026: Decode 2026", group="Training")
+@TeleOp(name="MaristBot2026: BIOBUZZ 2026", group="Training")
 //@Disabled
 public class TeleopStrafer_Quad_2026 extends OpMode {
 
